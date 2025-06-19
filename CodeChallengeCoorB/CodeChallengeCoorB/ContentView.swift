@@ -7,18 +7,41 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct HomeView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationView {
+            VStack(spacing: 20) {
+                Image(systemName: "globe")
+                    .font(.system(size: 80))
+                    .foregroundColor(.gray)
+                
+                Text("No countries added yet")
+                    .font(.title2)
+                    .foregroundColor(.secondary)
+                
+                Text("Tap the + add country \n button to search and add countries")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .navigationTitle("Countries List")
+            .navigationBarItems(trailing: addCountryButton())
         }
-        .padding()
+    }
+    
+    func addCountryButton() -> some View {
+        Button {
+           print("Add country button Tapped")
+        } label: {
+            Image(systemName: "plus.circle")
+                .foregroundStyle(.green)
+            Text("Add country")
+                .foregroundStyle(.green)
+        }
     }
 }
 
 #Preview {
-    ContentView()
+    HomeView()
 }
