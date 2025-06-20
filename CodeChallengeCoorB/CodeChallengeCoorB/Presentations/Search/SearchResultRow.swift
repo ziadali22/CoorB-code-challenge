@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SearchResultRow: View {
+    let country: Country
     let isAdded: Bool
     let canAdd: Bool
     let onAdd: () -> Void
@@ -15,14 +16,15 @@ struct SearchResultRow: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Egypt")
+                Text(country.name)
                     .font(.headline)
+                    .foregroundColor(.primary)
                 
-                Text("Capital: Cairo")
+                Text("Capital: \(country.displayCapital)")
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
-                Text("Currency: EGP")
+                Text("Currency: \(country.displayCurrencyCode)")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
