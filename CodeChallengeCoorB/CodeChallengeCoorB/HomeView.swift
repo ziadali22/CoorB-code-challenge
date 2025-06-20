@@ -8,11 +8,27 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var navigateToSearch = false
+    @State private var navigateToDetails = false
+    
     var body: some View {
-        NavigationView {
-            EmptyView()
+        NavigationStack {
+            List(0..<5) {_ in 
+                CountryCardView(onTap: {
+                    navigateToDetails = true
+                },onRemove: {})
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+            }
+            .listStyle(.plain)
             .navigationTitle("Countries List")
             .navigationBarItems(trailing: addCountryButton())
+            .navigationDestination(isPresented: $navigateToSearch) {
+                CountrySearchView()
+            }
+            .navigationDestination(isPresented: $navigateToDetails) {
+               CountryDetailsView()
+            }
         }
     }
 }
@@ -26,7 +42,7 @@ extension HomeView {
     // navigation bar trailling button
     func addCountryButton() -> some View {
         Button {
-           print("Add country button Tapped")
+            navigateToSearch = true
         } label: {
             Image(systemName: "plus.circle")
                 .foregroundStyle(.green)
