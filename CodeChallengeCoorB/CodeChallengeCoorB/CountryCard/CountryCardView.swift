@@ -37,6 +37,7 @@ struct CountryCardView: View {
     private var removeButtonView: some View {
         Button(action: onRemove) {
             Image(systemName: "xmark.circle.fill")
+                .font(.title)
                 .foregroundColor(.red)
                 .buttonStyle(PlainButtonStyle())
         }
@@ -68,7 +69,7 @@ struct CountryCardView: View {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(
                         LinearGradient(
-                            colors: [.blue.opacity(0.3), .purple.opacity(0.3)],
+                            colors: [.black.opacity(0.3), .purple.opacity(0.3)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ),
