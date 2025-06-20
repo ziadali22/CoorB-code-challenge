@@ -28,13 +28,13 @@ struct CapitalAndCurrencyView: View {
             
             HStack(alignment: .center, spacing: 8) {
                 Text(title)
-                    .font(.system(size: 12))
+                    .font(.system(size: 14))
                     .fontWeight(.medium)
                     .foregroundStyle(.secondary)
                     .textCase(.uppercase)
                 
                 Text(value)
-                    .font(.system(size: 12))
+                    .font(.system(size: 14))
                     .fontWeight(.semibold)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
