@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct CodeChallengeCoorBApp: App {
+    @StateObject private var container = DIContainer()
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environmentObject(container)
         }
     }
 }
