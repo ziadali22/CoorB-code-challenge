@@ -13,13 +13,16 @@ final class CountrySearchViewModel: ObservableObject {
     @Published var searchQuery: String = ""
     @Published var searchResults: [Country] = []
     @Published var isLoading = false
+    @Published var selectedCountries: [Country] = []
+    @Published var errorMessage: String?
 
-    private let useCase: CountryUseCaseProtocol
+    private let countryUseCase: CountryUseCaseProtocol
     private var cancellables = Set<AnyCancellable>()
     private var searchTask: Task<Void, Never>?
+    private let maxCountries = 5
 
-    init(useCase: CountryUseCaseProtocol) {
-        self.useCase = useCase
+    init(countryUseCase: CountryUseCaseProtocol) {
+        self.countryUseCase = countryUseCase
         bindSearchQuery()
     }
 
@@ -44,7 +47,7 @@ final class CountrySearchViewModel: ObservableObject {
         searchTask = Task {
             do {
                 isLoading = true
-                let countries = try await useCase.searchCountry(by: query)
+                let countries = try await countryUseCase.searchCountry(by: query)
                 searchResults = countries
             } catch {
                 print("Failed to search countries: \(error)")
@@ -53,4 +56,17 @@ final class CountrySearchViewModel: ObservableObject {
             isLoading = false
         }
     }
+    
+    func clearSearch() {
+        searchTask?.cancel()
+        searchQuery = ""
+        searchResults = []
+        isLoading = false
+        errorMessage = nil
+    }
+    
+    deinit {
+        searchTask?.cancel()
+    }
+    
 }
