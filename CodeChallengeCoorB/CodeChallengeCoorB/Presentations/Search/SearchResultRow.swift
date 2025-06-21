@@ -9,41 +9,60 @@ import SwiftUI
 
 struct SearchResultRow: View {
     let country: Country
-    let isAdded: Bool
-    let canAdd: Bool
-    let onAdd: () -> Void
+    let isAlreadyAdded: Bool
+    let onTap: () -> Void
+    
+    init(country: Country, isAlreadyAdded: Bool, onTap: @escaping () -> Void) {
+        self.country = country
+        self.isAlreadyAdded = isAlreadyAdded
+        self.onTap = onTap
+    }
     
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(country.name)
-                    .font(.headline)
-                    .foregroundColor(.primary)
-                
-                Text("Capital: \(country.displayCapital)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                
-                Text("Currency: \(country.displayCurrencyCode)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+        Button(action: {
+            if !isAlreadyAdded {
+                onTap()
             }
-            
-            Spacer()
-            
-            if isAdded {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.green)
-                    .font(.title3)
-            } else {
-                Button(action: onAdd) {
-                    Image(systemName: "plus.circle")
-                        .foregroundColor(canAdd ? .blue : .gray)
-                        .font(.title3)
+        }) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(country.name)
+                        .font(.headline)
+                        .foregroundColor(isAlreadyAdded ? .secondary : .primary)
+                    
+                    Text("Capital: \(country.displayCapital)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    Text("Currency: \(country.displayCurrency)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                 }
-                .disabled(!canAdd)
+                
+                Spacer()
+                
+                
+                if isAlreadyAdded {
+                    HStack(spacing: 4) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.green)
+                            .font(.title2)
+                        
+                        Text("Added")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                } else {
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundColor(.blue)
+                        .font(.title2)
+                }
             }
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
+            .opacity(isAlreadyAdded ? 0.6 : 1.0)
         }
-        .padding(.vertical, 4)
+        .buttonStyle(PlainButtonStyle())
+        .disabled(isAlreadyAdded)
     }
 }
