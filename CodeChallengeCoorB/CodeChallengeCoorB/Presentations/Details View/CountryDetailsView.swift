@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct CountryDetailsView: View {
+    @Environment(\.dismiss) var dismiss
+    let country: Country
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 24) {
                 // Country Header
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Egypt")
+                    Text(country.name)
                         .font(.largeTitle)
                         .fontWeight(.bold)
                     
@@ -31,7 +33,7 @@ struct CountryDetailsView: View {
                             .fontWeight(.semibold)
                     }
                     
-                    Text("Cairo")
+                    Text(country.displayCapital)
                         .font(.title3.bold())
                         .padding()
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -50,7 +52,7 @@ struct CountryDetailsView: View {
                             .fontWeight(.semibold)
                     }
                     
-                    Text("USD")
+                    Text(country.displayCurrencyCode)
                         .font(.title3.bold())
                         .padding()
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -63,10 +65,7 @@ struct CountryDetailsView: View {
             .padding()
             .navigationTitle("Country Details")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(trailing: Button("Done", role: .destructive) {dismiss()})
         }
     }
-}
-
-#Preview {
-    CountryDetailsView()
 }
