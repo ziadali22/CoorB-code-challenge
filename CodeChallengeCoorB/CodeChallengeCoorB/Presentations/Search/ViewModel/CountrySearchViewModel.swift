@@ -36,7 +36,7 @@ final class CountrySearchViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    private func performSearch(query: String) {
+    func performSearch(query: String) {
         searchTask?.cancel()
 
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
