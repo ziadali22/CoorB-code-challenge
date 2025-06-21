@@ -7,23 +7,58 @@
 
 import SwiftUI
 
+struct CountriesListView: View {
+    let countries: [Country]
+    let onRemove: (Country) -> Void
+    @State private var selectedCountry: Country?
+    
+    var body: some View {
+        List(countries) { country in
+            CountryCardView(country: country, onRemove: onRemove)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    selectedCountry = country
+                }
+                .listRowSeparator(.hidden)
+        }
+        .listStyle(.plain)
+        .sheet(item: $selectedCountry) { country in
+            CountryDetailsView(country: country)
+        }
+    }
+}
+
 struct CountryCardView: View {
-    let onTap: () -> Void
-    let onRemove: () -> Void
+    let country: Country
+    let onRemove: ((Country) -> Void)?
+    
+    init(country: Country, onRemove: @escaping (Country) -> Void) {
+        self.country = country
+        self.onRemove = onRemove
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                setHeaderTitleSection(countryName: "United Arab Emirates")
+                setHeaderTitleSection(countryName: country.name)
+                
                 Spacer()
-                removeButtonView
+                
+                if let onRemove = onRemove {
+                    Button(action: {
+                        onRemove(country)
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.red)
+                            .font(.title2)
+                    }
+                    .buttonStyle(BorderlessButtonStyle())
+                }
             }
-
-            setCountryDetailsView(capital: "Dubai", currency: "AED")
+            setCountryDetailsView(capital: country.displayCapital, currency: country.displayCurrencyCode)
         }
         .padding(16)
-        .background {customCardBackground}
-        .onTapGesture {handleTapGesture()}
+        .background(customCardBackground)
     }
     
     // MARK: - Sub Views
@@ -33,15 +68,6 @@ struct CountryCardView: View {
             .fontWeight(.semibold)
             .foregroundStyle(.primary)
             .lineLimit(1)
-    }
-    private var removeButtonView: some View {
-        Button(action: onRemove) {
-            Image(systemName: "xmark.circle.fill")
-                .font(.title)
-                .foregroundColor(.red)
-                .buttonStyle(PlainButtonStyle())
-        }
-        .padding(8)
     }
     
     private func setCountryDetailsView(capital: String, currency: String) -> some View {
@@ -77,9 +103,5 @@ struct CountryCardView: View {
                     )
             )
             .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
-    }
-    // MARK: - Actions
-    private func handleTapGesture() {
-        onTap()
     }
 }
