@@ -8,6 +8,7 @@
 
 protocol CountryRepositoryProtocol {
     func fetchCountryByName(_ name: String) async throws -> [Country]
+    func fetchCountryByCode(_ code: String) async throws -> Country?
 }
 
 class CountryRepository: CountryRepositoryProtocol {
@@ -19,5 +20,9 @@ class CountryRepository: CountryRepositoryProtocol {
     
     func fetchCountryByName(_ name: String) async throws -> [Country] {
         return try await networkService.fetchCountries(by: name)
+    }
+    
+    func fetchCountryByCode(_ code: String) async throws -> Country? {
+        return try await networkService.fetchCountryByCode(code)
     }
 }

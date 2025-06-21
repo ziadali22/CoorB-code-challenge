@@ -10,6 +10,7 @@ import Foundation
 // MARK: - Network Service
 protocol NetworkServiceProtocol {
     func fetchCountries(by name: String) async throws -> [Country]
+    func fetchCountryByCode(_ code: String) async throws -> Country?
 }
 
 class NetworkService: NetworkServiceProtocol {
@@ -30,6 +31,26 @@ class NetworkService: NetworkServiceProtocol {
         do {
             let countries = try JSONDecoder().decode([Country].self, from: data)
             return countries
+        } catch {
+            throw NetworkError.decodingError(error)
+        }
+    }
+    
+    func fetchCountryByCode(_ code: String) async throws -> Country? {
+        guard let url = URL(string: "\(baseURL)/alpha/\(code)") else {
+            throw NetworkError.invalidURL
+        }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw NetworkError.invalidResponse
+        }
+        
+        do {
+            let country = try JSONDecoder().decode(Country.self, from: data)
+            return country
         } catch {
             throw NetworkError.decodingError(error)
         }

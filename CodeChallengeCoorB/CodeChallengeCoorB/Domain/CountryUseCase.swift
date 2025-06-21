@@ -7,6 +7,7 @@
 
 protocol CountryUseCaseProtocol {
     func searchCountry(by name: String) async throws -> [Country]
+    func getCountry(by code: String) async throws -> Country?
 }
 
 class CountryUseCase: CountryUseCaseProtocol {
@@ -18,5 +19,9 @@ class CountryUseCase: CountryUseCaseProtocol {
     
     func searchCountry(by name: String) async throws -> [Country] {
         return try await repository.fetchCountryByName(name)
+    }
+    
+    func getCountry(by code: String) async throws -> Country? {
+        return try await repository.fetchCountryByCode(code)
     }
 }
