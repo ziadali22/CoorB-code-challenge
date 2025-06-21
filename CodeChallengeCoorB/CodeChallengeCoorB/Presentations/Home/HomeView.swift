@@ -24,8 +24,10 @@ struct HomeContentView: View {
     init(container: DIContainer, showingSearch: Binding<Bool>) {
         self.container = container
         self._showingSearch = showingSearch
-        self._viewModel = StateObject(wrappedValue: HomeViewModel(
-            cacheService: container.cacheService,
+        self._viewModel = StateObject(wrappedValue: HomeViewModel(cacheService: container.cacheService,
+                                                                  countryUseCase: container.countryUseCase,
+                                                                  locationManager: container.locationManager
+           
         ))
     }
     

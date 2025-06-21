@@ -14,16 +14,28 @@ class HomeViewModel: ObservableObject {
     @Published var isInitializing: Bool = true
     
     private let cacheService: CacheServiceProtocol
+    private let countryUseCase: CountryUseCaseProtocol
+    private let locationManager: any LocationManagerProtocol
     private let maxCountries = 5
+    private let defaultCountryCode = "EG"
     
-    init(cacheService: CacheServiceProtocol) {
+    init(cacheService: CacheServiceProtocol, countryUseCase: CountryUseCaseProtocol, locationManager: any LocationManagerProtocol) {
         self.cacheService = cacheService
+        self.countryUseCase = countryUseCase
+        self.locationManager = locationManager
         
-        initializeCountries()
+        Task {
+            await initializeCountries()
+        }
+        
     }
     
-    private func initializeCountries() {
+    private func initializeCountries() async {
         loadSelectedCountries()
+
+        if selectedCountries.isEmpty {
+            await addLocationBasedCountry()
+        }
         
         isInitializing = false
     }
@@ -34,6 +46,34 @@ class HomeViewModel: ObservableObject {
     
     private func saveSelectedCountries() {
         cacheService.saveSelectedCountries(selectedCountries)
+    }
+    
+    private func addLocationBasedCountry() async {
+        locationManager.requestLocationPermission()
+        
+        // Wait a bit for permission response
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        
+        let countryCode = await locationManager.getCurrentCountryCode() ?? defaultCountryCode
+        
+        do {
+            if let country = try await countryUseCase.getCountry(by: countryCode) {
+                selectedCountries.append(country)
+                saveSelectedCountries()
+            }
+        } catch {
+            // If location-based country fails, try default country
+            if countryCode != defaultCountryCode {
+                do {
+                    if let defaultCountry = try await countryUseCase.getCountry(by: defaultCountryCode) {
+                        selectedCountries.append(defaultCountry)
+                        saveSelectedCountries()
+                    }
+                } catch {
+                    errorMessage = "Failed to load default country: \(error.localizedDescription)"
+                }
+            }
+        }
     }
     
     

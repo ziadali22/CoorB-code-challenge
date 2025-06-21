@@ -10,6 +10,7 @@ class DIContainer: ObservableObject {
     // Services
     lazy var networkService: NetworkServiceProtocol = NetworkService()
     lazy var cacheService: CacheServiceProtocol = CacheService()
+    lazy var locationManager: any LocationManagerProtocol = LocationManager()
     
     // Repository
     lazy var countryRepository: CountryRepositoryProtocol = CountryRepository(
